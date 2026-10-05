@@ -1,0 +1,30 @@
+{
+  "composition": "AnimationTemplate",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "duration": 5,
+  "layers": [
+    {
+      "id": "doubao",
+      "image": "doubao_head_normal.png",
+      "keyframes": [
+        {"time": 0, "x": 200, "y": 380, "scale": 0.38, "opacity": 1},
+        {"time": 2, "x": 200, "y": 380, "scale": 0.38, "opacity": 1},
+        {"time": 3, "x": 540, "y": 960, "scale": 0.5, "opacity": 1, "easing": "ease-in"},
+        {"time": 4, "x": 540, "y": 1400, "scale": 0.3, "opacity": 0.8, "easing": "ease-out"},
+        {"time": 5, "x": 540, "y": 1400, "scale": 0.3, "opacity": 0.8}
+      ]
+    },
+    {
+      "id": "slingshot",
+      "image": "slingshot.png",
+      "keyframes": [
+        {"time": 0, "x": 280, "y": 420, "scale": 0.15, "opacity": 0},
+        {"time": 0.5, "x": 280, "y": 420, "scale": 0.15, "opacity": 1},
+        {"time": 2, "x": 280, "y": 420, "scale": 0.15, "opacity": 1},
+        {"time": 2.5, "x": 280, "y": 420, "scale": 0.15, "opacity": 0}
+      ]
+    }
+  ]
+}
