@@ -1,0 +1,144 @@
+{
+  "composition": "AnimationTemplate",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "duration": 20,
+  "layers": [
+    {
+      "id": "doubao_normal",
+      "image": "doubao_head_normal.png",
+      "keyframes": [
+        {"time": 0, "x": 200, "y": 380, "scale": 0.36, "opacity": 1},
+        {"time": 1, "x": 210, "y": 375, "scale": 0.37, "opacity": 1, "easing": "ease-in-out"},
+        {"time": 2, "x": 190, "y": 385, "scale": 0.36, "opacity": 1, "easing": "ease-in-out"},
+        {"time": 3, "x": 200, "y": 380, "scale": 0.36, "opacity": 1, "easing": "ease-in-out"},
+        {"time": 3.5, "x": 200, "y": 380, "scale": 0.36, "opacity": 0}
+      ]
+    },
+    {
+      "id": "doubao_angry",
+      "image": "doubao_head_angry.png",
+      "keyframes": [
+        {"time": 3.5, "x": 200, "y": 380, "scale": 0.36, "opacity": 0},
+        {"time": 4, "x": 200, "y": 380, "scale": 0.38, "opacity": 1, "easing": "ease-out"},
+        {"time": 5, "x": 200, "y": 380, "scale": 0.38, "opacity": 1},
+        {"time": 5.5, "x": 200, "y": 380, "scale": 0.38, "opacity": 0}
+      ]
+    },
+    {
+      "id": "slingshot",
+      "image": "slingshot.png",
+      "keyframes": [
+        {"time": 3, "x": 290, "y": 420, "scale": 0.12, "opacity": 0, "rotation": -15},
+        {"time": 3.5, "x": 290, "y": 420, "scale": 0.14, "opacity": 1, "easing": "ease-out", "rotation": -15},
+        {"time": 5, "x": 290, "y": 420, "scale": 0.14, "opacity": 1, "rotation": -15},
+        {"time": 5.3, "x": 290, "y": 420, "scale": 0.16, "opacity": 1, "rotation": 0, "easing": "ease-in"},
+        {"time": 5.5, "x": 290, "y": 420, "scale": 0.14, "opacity": 0, "rotation": 0}
+      ]
+    },
+    {
+      "id": "rock1",
+      "image": "flying_rock.png",
+      "keyframes": [
+        {"time": 5.3, "x": 290, "y": 420, "scale": 0.08, "opacity": 0},
+        {"time": 5.5, "x": 290, "y": 420, "scale": 0.08, "opacity": 1},
+        {"time": 6.2, "x": 270, "y": 1100, "scale": 0.1, "opacity": 1, "easing": "ease-in"},
+        {"time": 6.5, "x": 270, "y": 1100, "scale": 0.12, "opacity": 0}
+      ]
+    },
+    {
+      "id": "rock2",
+      "image": "flying_rock.png",
+      "keyframes": [
+        {"time": 6.5, "x": 290, "y": 420, "scale": 0.08, "opacity": 0},
+        {"time": 6.7, "x": 290, "y": 420, "scale": 0.08, "opacity": 1},
+        {"time": 7.4, "x": 540, "y": 1100, "scale": 0.1, "opacity": 1, "easing": "ease-in"},
+        {"time": 7.7, "x": 540, "y": 1100, "scale": 0.12, "opacity": 0}
+      ]
+    },
+    {
+      "id": "rock3",
+      "image": "flying_rock.png",
+      "keyframes": [
+        {"time": 7.7, "x": 290, "y": 420, "scale": 0.08, "opacity": 0},
+        {"time": 7.9, "x": 290, "y": 420, "scale": 0.08, "opacity": 1},
+        {"time": 8.6, "x": 810, "y": 1100, "scale": 0.1, "opacity": 1, "easing": "ease-in"},
+        {"time": 8.9, "x": 810, "y": 1100, "scale": 0.12, "opacity": 0}
+      ]
+    },
+    {
+      "id": "portal",
+      "image": "portal.png",
+      "keyframes": [
+        {"time": 8.5, "x": 540, "y": 1050, "scale": 0.01, "opacity": 0},
+        {"time": 9, "x": 540, "y": 1050, "scale": 0.35, "opacity": 1, "easing": "ease-out"},
+        {"time": 12, "x": 540, "y": 1050, "scale": 0.35, "opacity": 1},
+        {"time": 13, "x": 540, "y": 1050, "scale": 0.35, "opacity": 0, "easing": "ease-in"}
+      ]
+    },
+    {
+      "id": "admin",
+      "image": "admin.png",
+      "keyframes": [
+        {"time": 9.5, "x": 540, "y": 1050, "scale": 0.01, "opacity": 0},
+        {"time": 10, "x": 540, "y": 1050, "scale": 0.25, "opacity": 1, "easing": "ease-out"},
+        {"time": 11, "x": 540, "y": 1050, "scale": 0.25, "opacity": 1},
+        {"time": 11.5, "x": 540, "y": 1000, "scale": 0.28, "opacity": 1, "easing": "ease-in-out"},
+        {"time": 12, "x": 540, "y": 1050, "scale": 0.25, "opacity": 1, "easing": "ease-in-out"},
+        {"time": 12.5, "x": 540, "y": 1050, "scale": 0.25, "opacity": 0}
+      ]
+    },
+    {
+      "id": "hook",
+      "image": "hook.png",
+      "keyframes": [
+        {"time": 12, "x": 540, "y": 1050, "scale": 0.1, "opacity": 0, "rotation": 45},
+        {"time": 12.3, "x": 540, "y": 1050, "scale": 0.1, "opacity": 1, "rotation": 45},
+        {"time": 13.2, "x": 200, "y": 380, "scale": 0.15, "opacity": 1, "easing": "ease-in", "rotation": -30},
+        {"time": 13.5, "x": 200, "y": 380, "scale": 0.15, "opacity": 1, "rotation": -30},
+        {"time": 14, "x": 200, "y": 380, "scale": 0.15, "opacity": 0}
+      ]
+    },
+    {
+      "id": "doubao_flying",
+      "image": "doubao_flying.png",
+      "keyframes": [
+        {"time": 13.5, "x": 200, "y": 380, "scale": 0.36, "opacity": 0, "rotation": 0},
+        {"time": 14, "x": 200, "y": 380, "scale": 0.36, "opacity": 1, "rotation": 0},
+        {"time": 15, "x": 350, "y": 700, "scale": 0.4, "opacity": 1, "easing": "ease-in", "rotation": 30},
+        {"time": 15.5, "x": 450, "y": 900, "scale": 0.42, "opacity": 1, "easing": "ease-in", "rotation": 60},
+        {"time": 16, "x": 540, "y": 1100, "scale": 0.45, "opacity": 0, "rotation": 90}
+      ]
+    },
+    {
+      "id": "flash",
+      "image": "flash_white.png",
+      "keyframes": [
+        {"time": 15.8, "x": 540, "y": 960, "scale": 0.5, "opacity": 0},
+        {"time": 16, "x": 540, "y": 960, "scale": 1.5, "opacity": 0.8, "easing": "ease-out"},
+        {"time": 16.3, "x": 540, "y": 960, "scale": 2, "opacity": 0, "easing": "ease-in"}
+      ]
+    },
+    {
+      "id": "doubao_injured",
+      "image": "doubao_head_injured.png",
+      "keyframes": [
+        {"time": 16, "x": 540, "y": 1200, "scale": 0.3, "opacity": 0, "rotation": 15},
+        {"time": 16.5, "x": 540, "y": 1200, "scale": 0.32, "opacity": 1, "easing": "ease-out", "rotation": 15},
+        {"time": 17.5, "x": 540, "y": 1200, "scale": 0.32, "opacity": 1, "rotation": 15},
+        {"time": 18, "x": 540, "y": 1200, "scale": 0.32, "opacity": 0}
+      ]
+    },
+    {
+      "id": "doubao_climbing",
+      "image": "doubao_climbing.png",
+      "keyframes": [
+        {"time": 18, "x": 350, "y": 1200, "scale": 0.3, "opacity": 0, "rotation": -10},
+        {"time": 18.5, "x": 350, "y": 1200, "scale": 0.3, "opacity": 1, "easing": "ease-out", "rotation": -10},
+        {"time": 19.5, "x": 220, "y": 500, "scale": 0.34, "opacity": 1, "easing": "ease-in-out", "rotation": -5},
+        {"time": 20, "x": 200, "y": 380, "scale": 0.36, "opacity": 1, "easing": "ease-out", "rotation": 0}
+      ]
+    }
+  ]
+}

@@ -1,7 +1,22 @@
-﻿node_modules/
-output/
-memory/
-*.log
+﻿# 构建输出
+out/
+remotion-project/out/
+*.mov
+*.mp4
+*.webm
+
+# 依赖
+node_modules/
+remotion-project/node_modules/
+
+# 缓存
+__pycache__/
+*.pyc
+__jycache__/
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# 配置（可选）
 .env
-dist/
-.cache/

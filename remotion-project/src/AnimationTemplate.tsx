@@ -3,6 +3,48 @@ import React from 'react';
 import { AbsoluteFill, useCurrentFrame, useVideoConfig, Img } from 'remotion';
 import type { AnimationConfig, Layer } from './types';
 import { interpolate } from './easing';
+import { animationConfig } from './animation-config';
+
+// 直接import所有图片，确保Remotion打包时包含
+import doubao_head_normal from '../public/doubao_head_normal.png';
+import doubao_head_angry from '../public/doubao_head_angry.png';
+import doubao_head_injured from '../public/doubao_head_injured.png';
+import doubao_flying from '../public/doubao_flying.png';
+import doubao_climbing from '../public/doubao_climbing.png';
+import doubao_injured from '../public/doubao_injured.png';
+// 从原视频提取的正确豆包姿态
+import doubao_normal from '../public/doubao_normal.png';
+import doubao_peek from '../public/doubao_peek.png';
+import doubao_falling from '../public/doubao_falling.png';
+import doubao_slingshot from '../public/doubao_slingshot.png';
+import slingshot from '../public/slingshot.png';
+import flying_rock from '../public/flying_rock.png';
+import portal from '../public/portal.png';
+import admin from '../public/admin.png';
+import hook from '../public/hook.png';
+import flash_white from '../public/flash_white.png';
+import ban_stamp from '../public/ban_stamp.png';
+
+// 图片名称到import的映射
+const imageMap: Record<string, string> = {
+  'doubao_head_normal.png': doubao_head_normal,
+  'doubao_head_angry.png': doubao_head_angry,
+  'doubao_head_injured.png': doubao_head_injured,
+  'doubao_flying.png': doubao_flying,
+  'doubao_climbing.png': doubao_climbing,
+  'doubao_injured.png': doubao_injured,
+  'doubao_normal.png': doubao_normal,
+  'doubao_peek.png': doubao_peek,
+  'doubao_falling.png': doubao_falling,
+  'doubao_slingshot.png': doubao_slingshot,
+  'slingshot.png': slingshot,
+  'flying_rock.png': flying_rock,
+  'portal.png': portal,
+  'admin.png': admin,
+  'hook.png': hook,
+  'flash_white.png': flash_white,
+  'ban_stamp.png': ban_stamp,
+};
 
 interface AnimationTemplateProps {
   config?: AnimationConfig;
@@ -36,6 +78,9 @@ const AnimationLayer: React.FC<{
   // 如果透明度为0，不渲染
   if (opacity <= 0.001) return null;
 
+  // 获取图片src
+  const imgSrc = imageMap[image] || image;
+
   return (
     <div
       style={{
@@ -58,7 +103,7 @@ const AnimationLayer: React.FC<{
         }}
       >
         <Img
-          src={image}
+          src={imgSrc}
           style={{
             display: 'block',
             maxWidth: 'none',
@@ -74,9 +119,11 @@ export const AnimationTemplate: React.FC<AnimationTemplateProps> = ({ config }) 
   const { fps } = useVideoConfig();
 
   const currentTime = frame / fps;
-  const layers = config?.layers || [];
-  const canvasWidth = config?.width || 1080;
-  const canvasHeight = config?.height || 1920;
+  // 优先使用props传入的config，否则使用animation-config.ts文件中的配置
+  const activeConfig = config || (animationConfig as unknown as AnimationConfig);
+  const layers = activeConfig?.layers || [];
+  const canvasWidth = activeConfig?.width || 1080;
+  const canvasHeight = activeConfig?.height || 1920;
 
   return (
     <AbsoluteFill

@@ -99,6 +99,17 @@ class RemotionControls:
         import shutil
         import tempfile
 
+        # 如果有props，写入animation-config.ts文件（避免命令行长度限制）
+        config_file = self.project_path / "src" / "animation-config.ts"
+        if props:
+            config_content = (
+                "// 动画配置 - 由 render-transparent 命令自动生成\n"
+                "// 不要手动编辑此文件\n"
+                f"export const animationConfig = {json.dumps(props, ensure_ascii=False, indent=2)};\n"
+            )
+            config_file.write_text(config_content, encoding='utf-8')
+            print(f"  已写入配置到: {config_file.name}")
+
         # 临时目录存放PNG序列
         seq_dir = Path(tempfile.mkdtemp(prefix="remotion_seq_"))
         print(f"  临时序列目录: {seq_dir}")
@@ -115,8 +126,7 @@ class RemotionControls:
                 render_args.extend(["--height", str(height)])
             if frames:
                 render_args.extend(["--frames", frames])
-            if props:
-                render_args.extend(["--props", json.dumps(props, ensure_ascii=False)])
+            # 注意：props已写入animation-config.ts，不通过命令行传递（避免Windows命令行长度限制）
 
             print("  Step 1: 渲染PNG序列...")
             result = self._run_npx(render_args)
@@ -386,6 +396,7 @@ def main():
     rt_parser.add_argument("--frames", help="渲染帧范围，如 0-150")
     rt_parser.add_argument("--format", default="prores", choices=["prores", "apng"], help="输出格式")
     rt_parser.add_argument("--props", help="传递给Composition的Props(JSON字符串)")
+    rt_parser.add_argument("--props-file", help="从JSON文件读取Props(推荐，避免命令行转义问题)")
     rt_parser.add_argument("--no-cleanup", action="store_true", help="不清理临时PNG序列")
 
     # list 命令
@@ -439,7 +450,14 @@ def main():
     elif args.command == "render-transparent":
         print(f"渲染透明背景视频: {args.comp}")
         props = None
-        if args.props:
+        if args.props_file:
+            try:
+                with open(args.props_file, 'r', encoding='utf-8') as f:
+                    props = json.load(f)
+                print(f"  从文件加载Props: {args.props_file}")
+            except Exception as e:
+                print(f"⚠️ Props文件读取失败: {e}")
+        elif args.props:
             try:
                 props = json.loads(args.props)
             except json.JSONDecodeError:

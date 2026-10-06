@@ -54,23 +54,123 @@ python remotion_controls.py render --composition MyComp --output out/video.webm 
 python remotion_controls.py serve --port 8765
 ```
 
-## 透明背景渲染说明
+## 透明背景渲染说明（已验证流程）
 
-Remotion 原生支持透明背景，关键配置：
+Remotion 原生支持透明背景，但 **CLI 的 `--transparent` 编码会丢失 Alpha 通道**（WebM VP8/VP9、MOV ProRes 均验证失败）。
 
-1. **Composition 背景透明**：React 组件根元素不设置背景色，或设置 `background: 'transparent'`
-2. **渲染标志**：`--transparent` 或 `renderMedia({ transparent: true })`
-3. **输出格式**：
-   - WebM (VP9)：文件小，兼容性好，剪映支持
-   - MOV (ProRes 4444)：质量高，文件大，专业剪辑软件支持
-4. **验证 Alpha**：用 ffprobe 检查输出视频是否包含 Alpha 通道
+**已验证的正确流程（PIT-024）：**
+
+1. **PNG序列渲染**：`npx remotion render src/index.ts Composition out/frames --sequence`（输出带Alpha的PNG序列）
+2. **ffmpeg合成ProRes 4444**：
+   ```bash
+   ffmpeg -y -framerate 30 -i out/frames/%04d.png \
+     -c:v prores_ks -profile:v 4 -pix_fmt yuva444p12le \
+     out/animation.mov
+   ```
+3. **验证Alpha通道**：`python verify_animation.py out/animation.mov`
+
+**剪映集成注意事项（PIT-024）：**
+- `add_media_safe` 导入 ProRes 4444 mov 时会自动转码为 H.264 mp4，**丢失Alpha**（66MB→0.07MB）
+- 必须**手动导入**：直接复制 mov 到草稿 materials 目录 → 创建 VideoMaterial → 注册到 materials.videos → VideoSegment(material=anim_material) → add_segment
+
+## 动画素材质量标准
+
+完整标准见 [QUALITY_STANDARD.md](QUALITY_STANDARD.md)。
+
+**合格动画素材的硬性指标：**
+- Alpha通道保留（yuva444p12le）
+- ProRes 4444 编码（profile=4）
+- 分辨率/帧率/时长与配置一致
+- 内容覆盖率 ≥ 50%（10点采样）
+- 文件大小合理（≤15MB/秒）
+
+**自动化验证：**
+```bash
+python verify_animation.py <动画文件> --duration 20 --width 1080 --height 1920
+```
+
+## 基础动画组件库
+
+位于 `remotion-project/src/components/`，所有组件均支持透明背景。
+
+### 角色与运动组件
+
+| 组件 | 说明 |
+|------|------|
+| **CharacterSprite** | 角色精灵：多姿态切换、位置/缩放/旋转/透明度关键帧动画 |
+| **MotionPath** | 运动路径：线性/贝塞尔/弹性/弹跳运动 |
+| **FlashEffect** | 闪白特效：快速淡入缓慢淡出 |
+| **ShakeEffect** | 震动特效：振幅衰减的随机震动 |
+| **FadeEffect** | 淡入淡出：可控淡入/淡出时长 |
+| **PopEffect** | 弹出特效：弹性缩放弹出 |
+| **SlideEffect** | 滑动特效：四方向缓出滑动 |
+
+### 文字动画组件（TextAnimations.tsx）
+
+| 组件 | 说明 | 适用场景 |
+|------|------|---------|
+| **TextReveal** | 逐字显现：打字机/淡入/上滑/左滑 | 旁白、台词、标题入场 |
+| **TextPop** | 弹出文字：缩放/旋转/弹跳 | 关键词强调、卡点 |
+| **TextWave** | 波浪文字：逐字正弦浮动 | 趣味风格、背景音乐节奏 |
+| **TextGlitch** | 故障风：RGB分离+抖动 | 科技感、故障艺术、转场 |
+| **TextGradient** | 渐变流光：颜色流动+扫光 | 标题、品牌名、高级感 |
+| **KineticText** | 动态排版：多行组合动画 | 开场标题、片尾字幕 |
+
+### 转场特效组件（TransitionEffects.tsx）
+
+| 组件 | 说明 | 适用场景 |
+|------|------|---------|
+| **FadeTransition** | 淡入淡出转场（in/out/inOut） | 通用转场、情绪过渡 |
+| **SlideTransition** | 滑动转场（上下左右） | 场景切换、内容替换 |
+| **ZoomTransition** | 缩放转场（推近/拉远） | 强调重点、镜头推进 |
+| **WipeTransition** | 擦除转场（上下左右/对角线） | 创意转场、风格化 |
+| **BlurTransition** | 模糊转场（先模糊后清晰） | 梦幻过渡、回忆闪回 |
+| **GlitchTransition** | 故障风转场（RGB分离+扫描线） | 科技感、故障艺术 |
+
+### 冲击特效组件（ImpactEffects.tsx）
+
+| 组件 | 说明 | 适用场景 |
+|------|------|---------|
+| **PunchImpact** | 拳击冲击（冲击波+星星+白闪） | 打斗、击打、碰撞 |
+| **ImpactFlash** | 冲击闪光（快速白闪） | 重击、爆炸、卡点 |
+| **ParticleBurst** | 粒子爆发（星星/火花/碎片） | 庆祝、爆炸、冲击 |
+| **Shockwave** | 冲击波（多环扩散） | 能量释放、爆炸、震感 |
+| **SpeedLines** | 速度线（放射状） | 高速冲击、冲刺、连击 |
+
+**使用示例：**
+```tsx
+import { PunchImpact, ParticleBurst, FadeTransition } from "./components";
+
+// 打斗场景
+<PunchImpact startFrame={90} x={540} y={800} scale={1.2} />
+<ParticleBurst startFrame={90} x={540} y={800} count={16} particleType="star" />
+<FadeTransition direction="in" duration={15} startFrame={0} color="#1a1a2e" />
+```
+
+**使用示例：**
+```tsx
+import { CharacterSprite, FlashEffect, TextReveal, TextPop } from "./components";
+
+<CharacterSprite
+  poses={[
+    { name: "idle", image: "/doubao_normal.png", frameRange: [0, 90],
+      position: [{frame: 0, x: 0, y: 0}, {frame: 90, x: 100, y: 0}] },
+    { name: "falling", image: "/doubao_falling.png", frameRange: [90, 150] },
+  ]}
+  width={250} height={250}
+/>
+<FlashEffect startFrame={90} duration={10} />
+<TextReveal text="被打了!" fontSize={56} startFrame={95} revealType="typewriter" />
+<TextPop text="痛!" fontSize={72} color="#ff6b6b" startFrame={110} popType="bounce" />
+```
 
 ## 项目结构
 
 ```
 remotion-controls-skill/
 ├── SKILL.md                    # 本文件
-├── README.md                   # 项目说明
+├── QUALITY_STANDARD.md         # 动画素材质量标准
+├── verify_animation.py         # 自动化验证工具
 ├── remotion_controls.py        # 主控制脚本（CLI/API）
 ├── .env.example                # 环境变量示例
 ├── .gitignore
@@ -80,8 +180,19 @@ remotion-controls-skill/
 │   ├── cap_template_library/   # 动画模板库
 │   ├── cap_quality_control/    # 质量控制
 │   └── cap_self_evolution/     # 自学习进化
-├── templates/                   # Remotion 项目模板
-└── examples/                    # 示例动画
+├── remotion-project/           # Remotion 项目
+│   ├── src/
+│   │   ├── components/         # 基础动画组件库
+│   │   │   ├── CharacterSprite.tsx
+│   │   │   ├── MotionPath.tsx
+│   │   │   ├── Effects.tsx
+│   │   │   └── index.ts
+│   │   ├── AnimationTemplate.tsx  # JSON驱动的动画模板
+│   │   ├── Root.tsx
+│   │   └── index.ts
+│   ├── public/                 # 静态素材（角色/道具图片）
+│   └── package.json
+└── out/                        # 渲染输出
 ```
 
 ## 能力模块
