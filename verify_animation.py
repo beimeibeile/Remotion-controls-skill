@@ -10,15 +10,20 @@ Remotion 动画素材自动化验证工具 v1.0
 import sys
 import os
 import json
+import shutil
 import subprocess
 import argparse
 from pathlib import Path
+
+# 外部工具路径（环境变量可覆盖）
+FFMPEG = os.environ.get("AVE_FFMPEG", shutil.which("ffmpeg") or r"D:\Ai\ffmpeg-master-latest-win64-gpl\bin\ffmpeg.exe")
+FFPROBE = os.environ.get("AVE_FFPROBE", shutil.which("ffprobe") or r"D:\Ai\ffmpeg-master-latest-win64-gpl\bin\ffprobe.exe")
 
 
 def run_ffprobe(file_path: str) -> dict:
     """运行ffprobe获取视频信息"""
     cmd = [
-        "ffprobe", "-v", "quiet",
+        FFPROBE, "-v", "quiet",
         "-print_format", "json",
         "-show_format", "-show_streams",
         file_path
@@ -32,7 +37,7 @@ def run_ffprobe(file_path: str) -> dict:
 def extract_frame(file_path: str, time_sec: float, output_path: str, fmt: str = "png") -> bool:
     """提取指定时间的帧（默认PNG保留Alpha通道）"""
     cmd = [
-        "ffmpeg", "-y",
+        FFMPEG, "-y",
         "-ss", str(time_sec),
         "-i", file_path,
         "-vframes", "1",
@@ -96,7 +101,7 @@ def check_frame_has_content(frame_path: str) -> dict:
     except ImportError:
         # 回退：用ffmpeg检查亮度
         cmd = [
-            "ffmpeg", "-i", frame_path,
+            FFMPEG, "-i", frame_path,
             "-vf", "signalstats",
             "-f", "null", "-"
         ]
