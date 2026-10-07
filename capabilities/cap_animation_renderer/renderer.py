@@ -4,10 +4,16 @@ cap_animation_renderer - 动画渲染器 v2.0
 """
 import json
 import os
+import shutil
 import subprocess
 import time
 from pathlib import Path
 from typing import Dict, Any, Optional, List, Tuple
+
+
+# 外部工具路径（环境变量可覆盖）
+FFMPEG = os.environ.get("AVE_FFMPEG", shutil.which("ffmpeg") or r"D:\Ai\ffmpeg-master-latest-win64-gpl\bin\ffmpeg.exe")
+FFPROBE = os.environ.get("AVE_FFPROBE", shutil.which("ffprobe") or r"D:\Ai\ffmpeg-master-latest-win64-gpl\bin\ffprobe.exe")
 
 
 # 缓动曲线常量（对应Remotion Easing）
@@ -194,7 +200,7 @@ class AnimationRenderer:
         from ..cap_api_wrapper.api import RemotionAPI
         api = RemotionAPI(str(self.project_path))
 
-        # 1. PNG序列渲染
+        # 1. PNG序列渲染（--sequence标志，输出element-00.png格式）
         frames_dir = self.output_dir / f"{composition}_frames"
         frames_dir.mkdir(exist_ok=True)
         seq_result = api.render_media(
@@ -203,7 +209,7 @@ class AnimationRenderer:
             output=str(frames_dir),
             transparent=True,
             fps=fps, width=width, height=height,
-            props=config, codec="png",
+            props=config, sequence=True,
         )
 
         # 2. ffmpeg合成ProRes 4444
@@ -211,10 +217,11 @@ class AnimationRenderer:
             output_name = f"{composition}_prores4444.mov"
         output_path = str(self.output_dir / output_name)
 
+        # Remotion PNG序列输出格式为element-00.png, element-01.png...
         ffmpeg_cmd = [
-            "ffmpeg", "-y",
+            FFMPEG, "-y",
             "-framerate", str(fps),
-            "-i", str(frames_dir / "%04d.png"),
+            "-i", str(frames_dir / "element-%02d.png"),
             "-c:v", "prores_ks",
             "-profile:v", "4",
             "-pix_fmt", "yuva444p12le",
@@ -258,7 +265,7 @@ class AnimationRenderer:
         # ffprobe检测
         try:
             proc = subprocess.run(
-                ["ffprobe", "-v", "error", "-select_streams", "v:0",
+                [FFPROBE, "-v", "error", "-select_streams", "v:0",
                  "-show_entries", "stream=codec_name,width,height,pix_fmt,duration",
                  "-of", "json", output_path],
                 capture_output=True, text=True, timeout=10,

@@ -15,7 +15,12 @@ class RemotionAPI:
         self.project_path = Path(project_path)
 
     def _run(self, args: List[str]) -> subprocess.CompletedProcess:
-        cmd = ["npx", "remotion"] + args
+        # Windows上npx是PowerShell脚本，需用cmd /c调用
+        import sys
+        if sys.platform == "win32":
+            cmd = ["cmd", "/c", "npx", "remotion"] + args
+        else:
+            cmd = ["npx", "remotion"] + args
         return subprocess.run(
             cmd, cwd=str(self.project_path),
             capture_output=True, text=True, encoding='utf-8', errors='replace'
@@ -33,18 +38,23 @@ class RemotionAPI:
         height: Optional[int] = None,
         props: Optional[Dict[str, Any]] = None,
         codec: str = "webm",
+        sequence: bool = False,
     ) -> Dict[str, Any]:
-        """渲染视频"""
+        """渲染视频
+        sequence=True时渲染PNG序列（输出目录内为element-00.png等）
+        """
         args = ["render", entry, composition, output]
         if transparent:
             args.append("--transparent")
+        if sequence:
+            args.append("--sequence")
         if fps:
             args.extend(["--fps", str(fps)])
         if width:
             args.extend(["--width", str(width)])
         if height:
             args.extend(["--height", str(height)])
-        if codec:
+        if codec and not sequence:
             args.extend(["--codec", codec])
         if props:
             args.extend(["--props", json.dumps(props, ensure_ascii=False)])
