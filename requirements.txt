@@ -1,0 +1,1 @@
+# Remotion Controls Skill 无额外pip依赖（Node.js + Remotion CLI + ffmpeg）

@@ -139,13 +139,24 @@ class RemotionControls:
                 return {"success": False, "error": "未找到PNG序列文件"}
             print(f"  序列帧数: {len(png_files)}")
 
-            # 确定文件名模式
+            # 确定文件名模式（自动检测前缀和数字位数）
             first_name = png_files[0].name
-            if "-" in first_name:
-                prefix = first_name.split("-")[0]
-                seq_pattern = f"{prefix}-%03d.png"
+            import re
+            # 匹配 element-00.png, element-000.png, 0000.png 等格式
+            m = re.match(r'^(.+?-)(\d+)\.png$', first_name)
+            if m:
+                prefix = m.group(1)  # 如 "element-"
+                digits = len(m.group(2))  # 数字位数
+                seq_pattern = f"{prefix}%0{digits}d.png"
             else:
-                seq_pattern = "%04d.png"
+                # 纯数字文件名如 0000.png
+                m2 = re.match(r'^(\d+)\.png$', first_name)
+                if m2:
+                    digits = len(m2.group(1))
+                    seq_pattern = f"%0{digits}d.png"
+                else:
+                    seq_pattern = "%04d.png"  # 兜底
+            print(f"  文件名模式: {seq_pattern}")
 
             # Step 2: ffmpeg 合成带Alpha的视频
             output_path = Path(output)
