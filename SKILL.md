@@ -10,6 +10,29 @@ authors:
 
 用代码驱动视频动画的专业控制技能。Remotion 是一个基于 React 的视频创作框架，用代码精确控制每一帧，原生支持透明背景渲染。
 
+## 姊妹项目（8姊妹skill）
+
+| 项目 | 定位 | 角色 |
+|------|------|------|
+| **ai-video-editor** | AI视频剪辑框架（大脑/集成平台） | 🚢 航空母舰 |
+| **jianying-editor** | 剪映工程控制 | ✂️ 剪辑底层 |
+| **Pr-controls-skill** | Pr工程控制 | 🎬 专业剪辑 |
+| **Ps-controls-skill** | Photoshop控制 | 🖼️ 图像处理 |
+| **Comfyui-controls-skill** | ComfyUI智能管理 | 🚀 AI算力 |
+| **Blender-controls-skill** | Blender智能管理 | 🎨 3D特效 |
+| **remotion-controls-skill** | Remotion代码动画（本项目） | 💻 代码动画 |
+| **anysearch-skill** | 深度搜索 | 📡 情报搜索 |
+
+> 单体都能干活，任意组合互相增强。能力注册中心v3.2统一调度，智能路由选择最佳skill。
+
+## 核心能力（模块下沉后）
+
+本skill已接收ai-video-editor下沉的2个代码动画模块，具备完整独立工作能力：
+
+- **Remotion执行器**：remotion_executor（PNG序列+ffmpeg ProRes 4444管线，Alpha通道保留）
+- **动画渲染适配器**：animation_render_adapter
+- **透明背景管线**：PNG序列 → ProRes 4444，适用于剪映模板动画素材
+
 ## 核心能力
 
 | 能力 | 说明 |
